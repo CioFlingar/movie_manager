@@ -1,6 +1,8 @@
 from rest_framework import viewsets
 from .models import MovieData
 from .serializers import MovieSerializer
+from django.shortcuts import render
+from django.core.paginator import Paginator
 
 
 
@@ -19,6 +21,13 @@ from .serializers import MovieSerializer
 #     if serializer.is_valid():
 #         serializer.save()
 #         return Response(serializer.data)
+
+def movie_list(request):
+    movie_objects = MovieData.objects.all()
+    paginator = Paginator(movie_objects, 2)
+    page = request.GET.get("page")
+    movie_objects = paginator.get_page(page)
+    return render(request, "movies/movie_list.html", {"movie_objects": movie_objects})
 
 
 class MovieViewSet(viewsets.ModelViewSet):
